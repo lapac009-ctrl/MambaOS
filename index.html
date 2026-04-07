@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mamba OS - Online Edition</title>
+    <style>
+        /* STIL - Glassmorphism & Neon */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Desktop Area */
+        #desktop {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Glavni Prozor */
+        .window {
+            position: absolute;
+            top: 100px;
+            left: 150px;
+            width: 500px;
+            height: 350px;
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 255, 0.5);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+            display: flex;
+            flex-direction: column;
+            resize: both;
+            overflow: hidden;
+        }
+
+        .window-header {
+            background: rgba(0, 255, 255, 0.2);
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: move;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        }
+
+        .window-title {
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+
+        .window-body {
+            padding: 20px;
+            flex: 1;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Taskbar */
+        #taskbar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 45px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #00ffff;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        #start-btn {
+            background: #00ffff;
+            color: black;
+            border: none;
+            padding: 5px 15px;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            box-shadow: 0 0 10px #00ffff;
+        }
+
+        #start-btn:hover {
+            background: #00cccc;
+        }
+
+        .clock {
+            margin-left: auto;
+            font-weight: bold;
+            color: #00ffff;
+        }
+
+        /* Neon tekst */
+        .neon {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+    </style>
+</head>
+<body>
+
+<div id="desktop">
+    <div class="window" id="main-window">
+        <div class="window-header">
+            <span class="window-title">Mamba OS v1.0 - Terminal</span>
+            <span style="color: red; cursor: pointer;">●</span>
+        </div>
+        <div class="window-body">
+            <p class="neon">> System Booting...</p>
+            <p>> Welcome, <span class="neon">Gazda Ognjen</span></p>
+            <p>> RAM: 64GB Detected (Cloud Virtualization)</p>
+            <p>> Status: <span style="color: #00ff00;">Online & Ready</span></p>
+            <br>
+            <p class="neon">Ovo je tvoj pravi operativni sistem koji radi na mreži.</p>
+        </div>
+    </div>
+
+    <div id="taskbar">
+        <button id="start-btn">MAMBA</button>
+        <div class="clock" id="clock">12:00</div>
+    </div>
+</div>
+
+<script>
+    // SAT - Radi u realnom vremenu
+    function updateClock() {
+        const now = new Date();
+        const time = now.getHours().toString().padStart(2, '0') + ":" + 
+                     now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('clock').innerText = time;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // POMERANJE PROZORA (Drag and Drop)
+    const win = document.getElementById('main-window');
+    const header = win.querySelector('.window-header');
+
+    header.onmousedown = function(e) {
+        let shiftX = e.clientX - win.getBoundingClientRect().left;
+        let shiftY = e.clientY - win.getBoundingClientRect().top;
+
+        function moveAt(pageX, pageY) {
+            win.style.left = pageX - shiftX + 'px';
+            win.style.top = pageY - shiftY + 'px';
+        }
+
+        function onMouseMove(e) {
+            moveAt(e.pageX, e.pageY);
+        }
+
+        document.addEventListener('mousemove', onMouseMove);
+
+        document.onmouseup = function() {
+            document.removeEventListener('mousemove', onMouseMove);
+            document.onmouseup = null;
+        };
+    };
+
+    header.ondragstart = function() { return false; };
+</script>
+
+</body>
+</html>
