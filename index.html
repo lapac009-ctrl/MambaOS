@@ -2,171 +2,171 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mamba OS - Online Edition</title>
+    <title>Mamba OS - Gazda Edition</title>
     <style>
-        /* STIL - Glassmorphism & Neon */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070&auto=format&fit=crop') no-repeat center center fixed;
+        :root {
+            --neon: #00ffff;
+            --glass: rgba(255, 255, 255, 0.1);
+            --bg-dark: rgba(10, 10, 10, 0.9);
+        }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%; overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+            background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop') no-repeat center center fixed;
             background-size: cover;
-            overflow: hidden;
-            color: white;
         }
 
-        /* Desktop Area */
-        #desktop {
-            width: 100vw;
-            height: 100vh;
-            position: relative;
+        /* LOGIN SCREEN */
+        #login-screen {
+            position: fixed; inset: 0; z-index: 999;
+            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: 0.5s;
         }
 
-        /* Glavni Prozor */
-        .window {
-            position: absolute;
-            top: 100px;
-            left: 150px;
-            width: 500px;
-            height: 350px;
-            background: rgba(20, 20, 20, 0.7);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 255, 255, 0.5);
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-            display: flex;
-            flex-direction: column;
-            resize: both;
-            overflow: hidden;
+        .login-card {
+            background: var(--glass); padding: 40px; border-radius: 20px;
+            border: 1px solid var(--neon); text-align: center;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
         }
 
-        .window-header {
-            background: rgba(0, 255, 255, 0.2);
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: move;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+        .login-card h1 { color: var(--neon); margin-bottom: 20px; }
+
+        input[type="password"], input[type="text"] {
+            background: rgba(0,0,0,0.5); border: 1px solid var(--neon);
+            color: white; padding: 10px; border-radius: 5px; width: 200px; outline: none;
         }
 
-        .window-title {
-            font-weight: bold;
-            color: #00ffff;
-            text-shadow: 0 0 5px #00ffff;
+        .btn {
+            background: var(--neon); color: black; border: none;
+            padding: 10px 20px; margin-top: 15px; cursor: pointer; font-weight: bold;
+            border-radius: 5px; transition: 0.3s;
         }
 
-        .window-body {
-            padding: 20px;
-            flex: 1;
-            font-family: 'Courier New', Courier, monospace;
-        }
+        /* DESKTOP */
+        #desktop { width: 100%; height: 100%; display: none; }
 
-        /* Taskbar */
+        /* TASKBAR */
         #taskbar {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 45px;
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid #00ffff;
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            box-sizing: border-box;
+            position: absolute; bottom: 0; width: 100%; height: 50px;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px);
+            border-top: 1px solid var(--neon); display: flex; align-items: center; padding: 0 15px;
+            box-sizing: border-box; z-index: 100;
         }
 
-        #start-btn {
-            background: #00ffff;
-            color: black;
-            border: none;
-            padding: 5px 15px;
-            font-weight: bold;
-            border-radius: 3px;
-            cursor: pointer;
-            box-shadow: 0 0 10px #00ffff;
+        .start-group { display: flex; gap: 15px; align-items: center; }
+        .system-group { margin-left: auto; display: flex; gap: 15px; align-items: center; color: var(--neon); font-size: 14px; }
+
+        .search-bar {
+            background: var(--glass); border: 1px solid var(--neon);
+            border-radius: 20px; padding: 5px 15px; color: white; width: 250px;
         }
 
-        #start-btn:hover {
-            background: #00cccc;
+        /* WINDOWS */
+        .window {
+            position: absolute; top: 15%; left: 20%; width: 600px; height: 400px;
+            background: var(--bg-dark); border: 1px solid var(--neon);
+            border-radius: 12px; box-shadow: 0 0 20px rgba(0,255,255,0.2);
+            backdrop-filter: blur(10px); display: none; flex-direction: column;
         }
 
-        .clock {
-            margin-left: auto;
-            font-weight: bold;
-            color: #00ffff;
+        .win-header {
+            padding: 10px; background: rgba(0,255,255,0.1);
+            display: flex; justify-content: space-between; border-bottom: 1px solid var(--neon);
+            cursor: move;
         }
 
-        /* Neon tekst */
-        .neon {
-            color: #00ffff;
-            text-shadow: 0 0 10px #00ffff;
-        }
+        .win-body { padding: 20px; color: white; overflow-y: auto; flex: 1; }
     </style>
 </head>
 <body>
 
+<div id="login-screen">
+    <div class="login-card">
+        <h1 id="user-welcome">MAMBA OS LOGIN</h1>
+        <input type="password" id="pass-input" placeholder="Unesi šifru...">
+        <br>
+        <button class="btn" onclick="checkPass()">OTJUČAJ</button>
+        <p style="color: #666; font-size: 12px; margin-top: 10px;">Hint: mamba123</p>
+    </div>
+</div>
+
 <div id="desktop">
-    <div class="window" id="main-window">
-        <div class="window-header">
-            <span class="window-title">Mamba OS v1.0 - Terminal</span>
-            <span style="color: red; cursor: pointer;">●</span>
+    <div class="window" id="browser-win">
+        <div class="win-header">
+            <span style="color: var(--neon)">Mamba Browser</span>
+            <span onclick="closeWin()" style="cursor:pointer; color:red">✖</span>
         </div>
-        <div class="window-body">
-            <p class="neon">> System Booting...</p>
-            <p>> Welcome, <span class="neon">Gazda Ognjen</span></p>
-            <p>> RAM: 64GB Detected (Cloud Virtualization)</p>
-            <p>> Status: <span style="color: #00ff00;">Online & Ready</span></p>
-            <br>
-            <p class="neon">Ovo je tvoj pravi operativni sistem koji radi na mreži.</p>
+        <div class="win-body">
+            <h3>Dobrodošao Gazda!</h3>
+            <p>Sistem je stabilan. Sve aplikacije su spremne za rad.</p>
+            <hr border="1" color="#00ffff">
+            <p>> CPU: 2% | RAM: 64GB | NET: Connected</p>
         </div>
     </div>
 
     <div id="taskbar">
-        <button id="start-btn">MAMBA</button>
-        <div class="clock" id="clock">12:00</div>
+        <div class="start-group">
+            <button id="start-btn" class="btn" style="margin:0" onclick="toggleWin()">MAMBA</button>
+            <input type="text" class="search-bar" placeholder="Traži aplikaciju..." id="search-input">
+        </div>
+
+        <div class="system-group">
+            <span id="battery">🔋 98%</span>
+            <span id="wifi">🌐 Connected</span>
+            <span id="clock" style="font-weight: bold; font-size: 16px;">00:00</span>
+        </div>
     </div>
 </div>
 
 <script>
-    // SAT - Radi u realnom vremenu
-    function updateClock() {
-        const now = new Date();
-        const time = now.getHours().toString().padStart(2, '0') + ":" + 
-                     now.getMinutes().toString().padStart(2, '0');
-        document.getElementById('clock').innerText = time;
+    const correctPass = "mamba123";
+
+    // LOGIN LOGIKA
+    function checkPass() {
+        const input = document.getElementById('pass-input').value;
+        if(input === correctPass) {
+            document.getElementById('login-screen').style.opacity = "0";
+            setTimeout(() => {
+                document.getElementById('login-screen').style.display = "none";
+                document.getElementById('desktop').style.display = "block";
+            }, 500);
+        } else {
+            alert("Pogrešna šifra, gazda!");
+        }
     }
-    setInterval(updateClock, 1000);
-    updateClock();
 
-    // POMERANJE PROZORA (Drag and Drop)
-    const win = document.getElementById('main-window');
-    const header = win.querySelector('.window-header');
+    // SAT
+    function startTime() {
+        const today = new Date();
+        let h = today.getHours();
+        let m = today.getMinutes();
+        m = m < 10 ? "0"+m : m;
+        document.getElementById('clock').innerHTML = h + ":" + m;
+        setTimeout(startTime, 1000);
+    }
+    startTime();
 
-    header.onmousedown = function(e) {
-        let shiftX = e.clientX - win.getBoundingClientRect().left;
-        let shiftY = e.clientY - win.getBoundingClientRect().top;
-
-        function moveAt(pageX, pageY) {
-            win.style.left = pageX - shiftX + 'px';
-            win.style.top = pageY - shiftY + 'px';
+    // SEARCH / LAUNCHER (Logika za "prave" aplikacije)
+    document.getElementById('search-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            const app = this.value.toLowerCase();
+            if(app === "google") window.open("https://google.com");
+            if(app === "discord") window.open("https://discord.com");
+            if(app === "youtube") window.open("https://youtube.com");
+            if(app === "roblox") window.open("https://roblox.com");
+            this.value = "";
         }
+    });
 
-        function onMouseMove(e) {
-            moveAt(e.pageX, e.pageY);
-        }
+    // WINDOW CONTROL
+    function toggleWin() {
+        const win = document.getElementById('browser-win');
+        win.style.display = win.style.display === "flex" ? "none" : "flex";
+    }
+    function closeWin() { document.getElementById('browser-win').style.display = "none"; }
 
-        document.addEventListener('mousemove', onMouseMove);
-
-        document.onmouseup = function() {
-            document.removeEventListener('mousemove', onMouseMove);
-            document.onmouseup = null;
-        };
-    };
-
-    header.ondragstart = function() { return false; };
 </script>
 
 </body>
