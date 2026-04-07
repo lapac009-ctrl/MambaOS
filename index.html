@@ -2,172 +2,206 @@
 <html lang="sr">
 <head>
     <meta charset="UTF-8">
-    <title>Mamba OS - Gazda Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mamba OS | Ultimate Desktop</title>
     <style>
         :root {
             --neon: #00ffff;
             --glass: rgba(255, 255, 255, 0.1);
-            --bg-dark: rgba(10, 10, 10, 0.9);
+            --shadow: 0 0 20px rgba(0, 255, 255, 0.4);
         }
 
         body, html {
             margin: 0; padding: 0; height: 100%; overflow: hidden;
             font-family: 'Segoe UI', sans-serif;
-            background: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop') no-repeat center center fixed;
+            background: url('https://images.unsplash.com/photo-1614850523296-d8c1af93d400?q=80&w=2070') no-repeat center center fixed;
             background-size: cover;
+            color: white;
         }
 
-        /* LOGIN SCREEN */
+        /* --- BOOT / LOGIN SCREEN --- */
         #login-screen {
-            position: fixed; inset: 0; z-index: 999;
-            background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(20px);
+            position: fixed; inset: 0; z-index: 9999;
+            background: radial-gradient(circle, #0a0a0a 0%, #000 100%);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: 0.5s;
+            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
         }
 
-        .login-card {
-            background: var(--glass); padding: 40px; border-radius: 20px;
-            border: 1px solid var(--neon); text-align: center;
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        .login-box {
+            background: var(--glass); padding: 50px; border-radius: 25px;
+            backdrop-filter: blur(20px); border: 1px solid var(--neon);
+            text-align: center; box-shadow: var(--shadow);
         }
 
-        .login-card h1 { color: var(--neon); margin-bottom: 20px; }
-
-        input[type="password"], input[type="text"] {
-            background: rgba(0,0,0,0.5); border: 1px solid var(--neon);
-            color: white; padding: 10px; border-radius: 5px; width: 200px; outline: none;
+        .mamba-logo { font-size: 50px; font-weight: 900; color: var(--neon); text-shadow: var(--shadow); margin-bottom: 20px; }
+        
+        input {
+            background: rgba(0,0,0,0.6); border: 1px solid var(--neon);
+            color: white; padding: 12px; border-radius: 8px; width: 250px;
+            outline: none; text-align: center; font-size: 18px;
         }
 
-        .btn {
-            background: var(--neon); color: black; border: none;
-            padding: 10px 20px; margin-top: 15px; cursor: pointer; font-weight: bold;
-            border-radius: 5px; transition: 0.3s;
+        .btn-login {
+            background: var(--neon); color: black; border: none; font-weight: bold;
+            padding: 12px 30px; margin-top: 20px; border-radius: 8px; cursor: pointer;
+            transition: 0.3s; box-shadow: var(--shadow);
         }
 
-        /* DESKTOP */
-        #desktop { width: 100%; height: 100%; display: none; }
+        /* --- DESKTOP AREA --- */
+        #desktop { width: 100%; height: 100vh; position: relative; display: none; }
 
-        /* TASKBAR */
+        /* --- TASKBAR --- */
         #taskbar {
-            position: absolute; bottom: 0; width: 100%; height: 50px;
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px);
-            border-top: 1px solid var(--neon); display: flex; align-items: center; padding: 0 15px;
-            box-sizing: border-box; z-index: 100;
+            position: absolute; bottom: 0; width: 100%; height: 55px;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(15px);
+            border-top: 1px solid var(--neon); display: flex; align-items: center;
+            padding: 0 20px; box-sizing: border-box; z-index: 1000;
         }
 
-        .start-group { display: flex; gap: 15px; align-items: center; }
-        .system-group { margin-left: auto; display: flex; gap: 15px; align-items: center; color: var(--neon); font-size: 14px; }
+        .start-btn {
+            background: var(--neon); color: black; border: none; padding: 8px 20px;
+            font-weight: 900; border-radius: 5px; cursor: pointer; box-shadow: var(--shadow);
+        }
 
+        .search-container { margin-left: 20px; flex-grow: 0.3; }
         .search-bar {
-            background: var(--glass); border: 1px solid var(--neon);
-            border-radius: 20px; padding: 5px 15px; color: white; width: 250px;
+            width: 100%; background: var(--glass); border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 15px; border-radius: 20px; color: white; outline: none;
         }
 
-        /* WINDOWS */
+        .sys-tray { margin-left: auto; display: flex; gap: 20px; font-size: 14px; color: var(--neon); }
+
+        /* --- WINDOWS --- */
         .window {
-            position: absolute; top: 15%; left: 20%; width: 600px; height: 400px;
-            background: var(--bg-dark); border: 1px solid var(--neon);
-            border-radius: 12px; box-shadow: 0 0 20px rgba(0,255,255,0.2);
-            backdrop-filter: blur(10px); display: none; flex-direction: column;
+            position: absolute; width: 600px; height: 400px; top: 15%; left: 25%;
+            background: rgba(10, 10, 10, 0.85); border: 1px solid var(--neon);
+            border-radius: 12px; backdrop-filter: blur(10px); box-shadow: var(--shadow);
+            display: none; flex-direction: column; overflow: hidden;
         }
 
         .win-header {
-            padding: 10px; background: rgba(0,255,255,0.1);
-            display: flex; justify-content: space-between; border-bottom: 1px solid var(--neon);
-            cursor: move;
+            padding: 12px; background: rgba(0, 255, 255, 0.15);
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: move; border-bottom: 1px solid var(--neon);
         }
 
-        .win-body { padding: 20px; color: white; overflow-y: auto; flex: 1; }
+        .win-body { padding: 25px; flex: 1; font-family: 'Consolas', monospace; color: #00ff00; }
+
+        .app-icon {
+            width: 80px; height: 80px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; cursor: pointer;
+            margin: 20px; transition: 0.2s;
+        }
+        .app-icon:hover { background: var(--glass); border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div id="login-screen">
-    <div class="login-card">
-        <h1 id="user-welcome">MAMBA OS LOGIN</h1>
-        <input type="password" id="pass-input" placeholder="Unesi šifru...">
+    <div class="login-box">
+        <div class="mamba-logo">🐍 MAMBA OS</div>
+        <p>Prijavi se kao GAZDA</p>
+        <input type="password" id="pass" placeholder="Šifra: mamba123">
         <br>
-        <button class="btn" onclick="checkPass()">OTJUČAJ</button>
-        <p style="color: #666; font-size: 12px; margin-top: 10px;">Hint: mamba123</p>
+        <button class="btn-login" onclick="login()">OTKLJUČAJ SISTEM</button>
     </div>
 </div>
 
 <div id="desktop">
-    <div class="window" id="browser-win">
-        <div class="win-header">
-            <span style="color: var(--neon)">Mamba Browser</span>
-            <span onclick="closeWin()" style="cursor:pointer; color:red">✖</span>
+    <div class="app-icon" onclick="openWin()">
+        <span style="font-size: 40px;">📂</span>
+        <span>My Files</span>
+    </div>
+
+    <div class="window" id="main-win">
+        <div class="win-header" id="win-header">
+            <span style="font-weight: bold; color: var(--neon);">SYSTEM DASHBOARD</span>
+            <span onclick="closeWin()" style="color: red; cursor: pointer; font-weight: bold;">[X]</span>
         </div>
         <div class="win-body">
-            <h3>Dobrodošao Gazda!</h3>
-            <p>Sistem je stabilan. Sve aplikacije su spremne za rad.</p>
+            <p>> Boot Sequence: COMPLETE</p>
+            <p>> User: OGNJEN (ROOT)</p>
+            <p>> Hardware: Virtualized 64GB RAM</p>
+            <p>> Status: <span style="color: #fff; text-shadow: 0 0 10px #fff;">SYSTEM ONLINE</span></p>
             <hr border="1" color="#00ffff">
-            <p>> CPU: 2% | RAM: 64GB | NET: Connected</p>
+            <p>Ukucaj ime sajta u pretragu dole da ga otvoriš.</p>
         </div>
     </div>
 
     <div id="taskbar">
-        <div class="start-group">
-            <button id="start-btn" class="btn" style="margin:0" onclick="toggleWin()">MAMBA</button>
-            <input type="text" class="search-bar" placeholder="Traži aplikaciju..." id="search-input">
+        <button class="start-btn" onclick="openWin()">MAMBA</button>
+        
+        <div class="search-container">
+            <input type="text" class="search-bar" id="search" placeholder="Pretraži aplikacije (npr. youtube, roblox)...">
         </div>
 
-        <div class="system-group">
-            <span id="battery">🔋 98%</span>
-            <span id="wifi">🌐 Connected</span>
-            <span id="clock" style="font-weight: bold; font-size: 16px;">00:00</span>
+        <div class="sys-tray">
+            <span>📶 Connected</span>
+            <span>🔋 100%</span>
+            <span id="clock" style="font-weight: bold; font-size: 18px;"></span>
         </div>
     </div>
 </div>
 
 <script>
-    const correctPass = "mamba123";
-
     // LOGIN LOGIKA
-    function checkPass() {
-        const input = document.getElementById('pass-input').value;
-        if(input === correctPass) {
-            document.getElementById('login-screen').style.opacity = "0";
+    function login() {
+        const p = document.getElementById('pass').value;
+        if(p === "mamba123") {
+            document.getElementById('login-screen').style.transform = "translateY(-100%)";
             setTimeout(() => {
                 document.getElementById('login-screen').style.display = "none";
                 document.getElementById('desktop').style.display = "block";
-            }, 500);
+            }, 800);
         } else {
-            alert("Pogrešna šifra, gazda!");
+            alert("Samo Gazda Ognjen zna šifru!");
         }
     }
 
     // SAT
-    function startTime() {
-        const today = new Date();
-        let h = today.getHours();
-        let m = today.getMinutes();
-        m = m < 10 ? "0"+m : m;
-        document.getElementById('clock').innerHTML = h + ":" + m;
-        setTimeout(startTime, 1000);
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + 
+                                                     now.getMinutes().toString().padStart(2, '0');
     }
-    startTime();
+    setInterval(updateClock, 1000);
+    updateClock();
 
-    // SEARCH / LAUNCHER (Logika za "prave" aplikacije)
-    document.getElementById('search-input').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            const app = this.value.toLowerCase();
-            if(app === "google") window.open("https://google.com");
-            if(app === "discord") window.open("https://discord.com");
-            if(app === "youtube") window.open("https://youtube.com");
-            if(app === "roblox") window.open("https://roblox.com");
+    // PROZOR KONTROLA
+    function openWin() { document.getElementById('main-win').style.display = "flex"; }
+    function closeWin() { document.getElementById('main-win').style.display = "none"; }
+
+    // SEARCH APPS
+    document.getElementById('search').addEventListener('keypress', function(e) {
+        if(e.key === 'Enter') {
+            const val = this.value.toLowerCase();
+            if(val.includes("google")) window.open("https://google.com");
+            else if(val.includes("youtube")) window.open("https://youtube.com");
+            else if(val.includes("discord")) window.open("https://discord.com");
+            else if(val.includes("roblox")) window.open("https://roblox.com");
+            else alert("Aplikacija '" + val + "' nije instalirana, ali je tražim na webu...");
             this.value = "";
         }
     });
 
-    // WINDOW CONTROL
-    function toggleWin() {
-        const win = document.getElementById('browser-win');
-        win.style.display = win.style.display === "flex" ? "none" : "flex";
-    }
-    function closeWin() { document.getElementById('browser-win').style.display = "none"; }
+    // DRAG WINDOW (Pomeranje mišem)
+    const win = document.getElementById("main-win");
+    const header = document.getElementById("win-header");
+    let isDragging = false;
+    let offset = [0,0];
+
+    header.onmousedown = (e) => {
+        isDragging = true;
+        offset = [win.offsetLeft - e.clientX, win.offsetTop - e.clientY];
+    };
+    document.onmousemove = (e) => {
+        if(isDragging) {
+            win.style.left = (e.clientX + offset[0]) + 'px';
+            win.style.top = (e.clientY + offset[1]) + 'px';
+        }
+    };
+    document.onmouseup = () => isDragging = false;
 
 </script>
-
 </body>
 </html>
